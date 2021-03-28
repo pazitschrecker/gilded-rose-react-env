@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import ShopItemTable, { Item } from "./components/ShopItemTable";
-import {items} from "./data/shopItems";
-import {Shop} from "./api/gilded_rose";
-import './App.css';
-import Button from 'react-bootstrap/Button';
+import { items } from "./data/shopItems";
+import { Shop } from "./api/gilded_rose";
+import "./App.css";
+import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -16,64 +16,73 @@ import WelcomeMessage from "./components/WelcomeMessage";
 interface Props {}
 
 interface State {
-    items: Item[]
+  items: Item[];
+  onSaleItems: Item[];
+  discountItems: Item[];
 }
 
 const shop = new Shop(items);
 
 class GildedRose extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            items: shop.items
-        };
-        console.log('Initial Shop state: ', this.state.items)
-    }
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      items: shop.items,
+      onSaleItems: shop.items,
+      discountItems: shop.discountItems,
+    };
+    console.log("Initial Shop state: ", this.state.items);
+  }
 
-    updateShowQuality() {
-        shop.updateQuality();
-        console.log('Shop State after update:', shop)
+  updateShowQuality() {
+    shop.updateQuality();
+    shop.updateItemLists();
+    console.log("Shop State after update:", shop);
 
-        this.setState({
-            items: shop.items
-        })
-    }
+    this.setState({
+      items: shop.items,
+      onSaleItems: shop.onSaleItems,
+      discountItems: shop.discountItems,
+    });
+  }
 
-    render() {
-        return (
-            <div className="App">
-                <Container>
-                    <Row>
-                        <Col>
-                            <Navbar bg="light">
-                                <Navbar.Brand href="#home">The Gilded Rose </Navbar.Brand>
-                            </Navbar>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <WelcomeMessage />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Tabs defaultActiveKey="sale" id="uncontrolled-tab-example">
-                                <Tab eventKey="sale" title="On Sale">
-                                    <Card>
-                                        <ShopItemTable items={this.state.items}/>
-                                    </Card>
-                                </Tab>
-                                <Tab eventKey="discount" title="Discount">
-                                    Coming soon...
-                                </Tab>
-                            </Tabs>
-                            <Button onClick={this.updateShowQuality.bind(this)}>Update Quality</Button>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="App">
+        <Container>
+          <Row>
+            <Col>
+              <Navbar bg="light">
+                <Navbar.Brand href="#home">The Gilded Rose </Navbar.Brand>
+              </Navbar>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <WelcomeMessage />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Tabs defaultActiveKey="sale" id="uncontrolled-tab-example">
+                <Tab eventKey="sale" title="On Sale">
+                  <Card>
+                    <ShopItemTable items={this.state.onSaleItems} />
+                  </Card>
+                </Tab>
+                <Tab eventKey="discount" title="Discount">
+                  <ShopItemTable items={this.state.discountItems} />
+                </Tab>
+              </Tabs>
+              <Button onClick={this.updateShowQuality.bind(this)}>
+                Update Quality
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default GildedRose;
