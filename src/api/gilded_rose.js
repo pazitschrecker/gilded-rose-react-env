@@ -7,8 +7,10 @@ export class Item {
 }
 
 export class Shop {
-  constructor(items = []) {
+  constructor(items = [], onSaleItems = [], discountItems = []) {
     this.items = items;
+    this.onSaleItems = onSaleItems;
+    this.discountItems = discountItems;
   }
   updateQuality() {
     for (var i = 0; i < this.items.length; i++) {
@@ -60,7 +62,6 @@ export class Shop {
                   this.items[i].quality > 1
                 ) {
                   this.items[i].quality = this.items[i].quality - 2;
-                  console.log("CONJURED");
                 } else {
                   this.items[i].quality = this.items[i].quality - 1;
                 }
@@ -79,5 +80,25 @@ export class Shop {
     }
 
     return this.items;
+  }
+
+  updateItemLists() {
+    this.onSaleItems = [];
+    this.discountItems = [];
+    for (var i = 0; i < this.items.length; i++) {
+      if (this.items[i].quality <= 0 || this.items[i].sellIn <= 0) {
+        this.discountItems.push(this.items[i]);
+      } else {
+        this.onSaleItems.push(this.items[i]);
+      }
+    }
+  }
+
+  getDiscounted() {
+    return this.discountItems;
+  }
+
+  getOnSale() {
+    return this.onSaleItems;
   }
 }
