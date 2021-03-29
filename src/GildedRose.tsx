@@ -11,6 +11,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Card from "react-bootstrap/Card";
+import Badge from "react-bootstrap/Badge";
 import WelcomeMessage from "./components/WelcomeMessage";
 
 interface Props {}
@@ -31,7 +32,7 @@ class GildedRose extends React.Component<Props, State> {
       onSaleItems: shop.items,
       discountItems: shop.discountItems,
     };
-    console.log("Initial Shop state: ", this.state.items);
+    //console.log("Initial Shop state: ", this.state.items);
   }
 
   updateShowQuality() {
@@ -64,17 +65,44 @@ class GildedRose extends React.Component<Props, State> {
           </Row>
           <Row>
             <Col>
-              <Tabs defaultActiveKey="sale" id="uncontrolled-tab-example">
-                <Tab eventKey="sale" title="On Sale">
+              <Tabs
+                defaultActiveKey="sale"
+                id="uncontrolled-tab-example"
+                data-testid="tabs-section"
+              >
+                <Tab
+                  eventKey="sale"
+                  title={
+                    <React.Fragment>
+                      On Sale{" "}
+                      <Badge variant="info" data-testid="sale-header">
+                        {this.state.onSaleItems.length}
+                      </Badge>
+                    </React.Fragment>
+                  }
+                >
                   <Card>
                     <ShopItemTable items={this.state.onSaleItems} />
                   </Card>
                 </Tab>
-                <Tab eventKey="discount" title="Discount">
+                <Tab
+                  eventKey="discount"
+                  title={
+                    <React.Fragment>
+                      Discount{" "}
+                      <Badge variant="info" data-testid="discount-header">
+                        {this.state.discountItems.length}
+                      </Badge>
+                    </React.Fragment>
+                  }
+                >
                   <ShopItemTable items={this.state.discountItems} />
                 </Tab>
               </Tabs>
-              <Button onClick={this.updateShowQuality.bind(this)}>
+              <Button
+                onClick={this.updateShowQuality.bind(this)}
+                id="updateButton"
+              >
                 Update Quality
               </Button>
             </Col>

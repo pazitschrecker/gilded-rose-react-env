@@ -16,13 +16,13 @@ describe("GildedRose Render Tests", () => {
   it("renders the on sale section header at start", () => {
     const { getAllByRole } = render(<GildedRose />);
     const discountHeader = getAllByRole("tab")[0];
-    expect(discountHeader).toHaveTextContent(/On Sale | 5$/i);
+    expect(discountHeader).toHaveTextContent("On Sale");
   });
 
   it("renders the discount section header at start", () => {
     const { getAllByRole } = render(<GildedRose />);
     const discountHeader = getAllByRole("tab")[1];
-    expect(discountHeader).toHaveTextContent(/Discount | 0$/i);
+    expect(discountHeader).toHaveTextContent("Discount");
   });
 
   it("renders two <ShopItemTable/> components", () => {
@@ -35,5 +35,17 @@ describe("GildedRose Render Tests", () => {
     const { getByRole } = render(<GildedRose />);
     const header = getByRole("link");
     expect(header).toHaveTextContent(/the gilded rose$/i);
+  });
+
+  it("renders number of discount items in header at start (0)", () => {
+    const { getByTestId } = render(<GildedRose />);
+    const discountHeader = getByTestId("discount-header");
+    expect(discountHeader).toHaveTextContent("0");
+  });
+
+  it("renders number of on sale items in header at start (5)", () => {
+    const { getByTestId } = render(<GildedRose />);
+    const onSaleHeader = getByTestId("sale-header");
+    expect(onSaleHeader).toHaveTextContent("5");
   });
 });
