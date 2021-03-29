@@ -19,71 +19,121 @@ describe("Conjured Item Tests -- Gilded Rose", function () {
 });
 
 describe("Discount Item Tests -- Gilded Rose", function () {
-  it("should add item to Discount once SellIn date passes", function () {
-    const gildedRose = new Shop([
-      new Item("Rice Chex", 2, 16),
-      new Item("Fruity Pebbles", 0, 8),
-    ]);
-    gildedRose.updateQuality();
-    gildedRose.updateItemLists();
-    const discountItems = gildedRose.getDiscounted();
-    expect(discountItems[0].name).toEqual("Fruity Pebbles");
-  });
-  it("should add items to discount once Quality reaches 0", function () {
-    const gildedRose = new Shop([
-      new Item("Froot Loops", 9, 0),
-      new Item("Fruity Pebbles", 5, 3),
-    ]);
-    gildedRose.updateQuality();
-    gildedRose.updateItemLists();
-    const discountItems = gildedRose.getDiscounted();
-    expect(discountItems[0].name).toEqual("Froot Loops");
-  });
-  it("should maintain list of discounted items as more are added", function () {
-    const gildedRose = new Shop([
-      new Item("Cinnamon Toast Crunch", 0, 6),
+  let gildedRose;
+  beforeEach(() => {
+    gildedRose = new Shop([
+      new Item("Cinnamon Toast Crunch", 1, 6),
       new Item("Froot Loops", 9, 6),
       new Item("Fruity Pebbles", 5, 2),
     ]);
+  });
+  it("should add items to discount once Quality reaches 0", function () {
+    gildedRose.updateQuality();
+    gildedRose.updateItemLists();
+    const discountItems = gildedRose.getDiscounted();
+    expect(discountItems[0].name).toEqual("Cinnamon Toast Crunch");
+  });
+  it("should add item to Discount once SellIn date passes", function () {
     gildedRose.updateQuality();
     gildedRose.updateQuality();
     gildedRose.updateItemLists();
     const discountItems = gildedRose.getDiscounted();
-    expect(discountItems.length).toEqual(2);
+    expect(discountItems[1].name).toEqual("Fruity Pebbles");
   });
   it("should decrease quality of discounted item twice as fast", function () {
-    const gildedRose = new Shop([
-      new Item("Rice Chex", 2, 16),
-      new Item("Fruity Pebbles", 0, 8),
-    ]);
+    gildedRose.updateQuality();
     gildedRose.updateQuality();
     gildedRose.updateItemLists();
     const discountItems = gildedRose.getDiscounted();
-    expect(discountItems[0].quality).toEqual(6);
+    expect(discountItems[0].quality).toEqual(3);
   });
 });
 
 describe("OnSale Item Tests -- Gilded Rose", function () {
-  it("should keep items in onSale if quality > 0 and SellIn date not passed", function () {
-    const gildedRose = new Shop([
+  let gildedRose;
+  beforeEach(() => {
+    gildedRose = new Shop([
       new Item("ESP32", 8, 6),
-      new Item("Raspberry Pi", 9, 30),
+      new Item("Raspberry Pi", 12, 2),
+      new Item("LED", 3, 4),
     ]);
+  });
+  it("should keep items in onSale if quality > 0 and SellIn date not passed", function () {
+    gildedRose.updateQuality();
+    gildedRose.updateItemLists();
+    const onSaleItems = gildedRose.getOnSale();
+    expect(onSaleItems.length).toEqual(3);
+  });
+  it("should remove item from onSale once SellIn date passes", function () {
     gildedRose.updateQuality();
     gildedRose.updateQuality();
     gildedRose.updateItemLists();
     const onSaleItems = gildedRose.getOnSale();
     expect(onSaleItems.length).toEqual(2);
   });
-  it("should remove item from onSale once SellIn date passes", function () {
+});
+
+describe("Sulfuras Item Tests -- Gilded Rose", function () {
+  let gildedRose;
+  beforeEach(() => {
+    gildedRose = new Shop([new Item("Sulfuras, Hand of Ragnaros", 1000, 80)]);
+  });
+  it("should not reduce the quality of Sulfuras item", function () {
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(80);
+  });
+  it("should not change SellIn date of Sulfuras item", function () {
+    const items = gildedRose.updateQuality();
+    expect(items[0].sellIn).toEqual(1000);
+  });
+});
+
+describe("Backstage Passes Item Tests -- Gilded Rose", function () {
+  it("should increase the quality of Backstage pass item by 1", function () {
     const gildedRose = new Shop([
-      new Item("ESP32", 1, 6),
-      new Item("Raspberry Pi", 3, 18),
-      new Item("LED", 3, 4),
+      new Item("Backstage passes to a TAFKAL80ETC concert", 12, 8),
     ]);
-    gildedRose.updateQuality();
-    gildedRose.updateItemLists();
-    const onSaleItems = gildedRose.getOnSale();
-    expect(onSaleItems.length).toEqual(2);
+    const items = gildedRose.updateQuality();
+    console.log(items[0]);
+    expect(items[0].quality).toEqual(9);
+  });
+  it("should increase the quality of Backstage pass item by 2", function () {
+    const gildedRose = new Shop([
+      new Item("Backstage passes to a TAFKAL80ETC concert", 8, 8),
+    ]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(10);
+  });
+  it("should increase the quality of Backstage pass item by 3", function () {
+    const gildedRose = new Shop([
+      new Item("Backstage passes to a TAFKAL80ETC concert", 4, 8),
+    ]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(11);
+  });
+  it("should drop the quality of Backstage pass item to 0", function () {
+    const gildedRose = new Shop([
+      new Item("Backstage passes to a TAFKAL80ETC concert", 0, 8),
+    ]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(0);
+  });
+});
+
+describe("Aged Brie Item Tests -- Gilded Rose", function () {
+  it("should increase quality of Brie by 1 before SellIn", function () {
+    const gildedRose = new Shop([new Item("Aged Brie", 3, 4)]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(5);
+  });
+  it("should increase quality of Brie by 2 after SellIn", function () {
+    const gildedRose = new Shop([new Item("Aged Brie", 0, 5)]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(7);
+  });
+  it("should not increase quality of Brie beyond 50", function () {
+    const gildedRose = new Shop([new Item("Aged Brie", 6, 50)]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(50);
   });
 });
