@@ -4,7 +4,7 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 import "@testing-library/jest-dom/extend-expect";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import React from "react";
 import { configure, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
@@ -47,5 +47,11 @@ describe("GildedRose Render Tests", () => {
     const { getByTestId } = render(<GildedRose />);
     const onSaleHeader = getByTestId("sale-header");
     expect(onSaleHeader).toHaveTextContent("5");
+  });
+
+  it("renders update quality button", () => {
+    const { getByTestId } = render(<GildedRose />);
+    const updateButton = getByTestId("update-button");
+    expect(updateButton).toHaveTextContent("Update Quality");
   });
 });

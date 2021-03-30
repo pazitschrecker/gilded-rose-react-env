@@ -102,6 +102,7 @@ class GildedRose extends React.Component<Props, State> {
               <Button
                 onClick={this.updateShowQuality.bind(this)}
                 id="updateButton"
+                data-testid="update-button"
               >
                 Update Quality
               </Button>
