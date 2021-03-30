@@ -12,7 +12,7 @@ import GildedRose from "./GildedRose";
 
 configure({ adapter: new Adapter() });
 
-describe("GildedRose Render Tests", () => {
+describe("GildedRose Basic Render Tests", () => {
   it("renders the on sale section header at start", () => {
     const { getAllByRole } = render(<GildedRose />);
     const discountHeader = getAllByRole("tab")[0];
@@ -26,8 +26,8 @@ describe("GildedRose Render Tests", () => {
   });
 
   it("renders two <ShopItemTable/> components", () => {
-    const gildedRose = shallow(<GildedRose />);
-    const tabSection = gildedRose.find("ShopItemTable");
+    const wrapper = shallow(<GildedRose />);
+    const tabSection = wrapper.find("ShopItemTable");
     expect(tabSection.length).toBe(2);
   });
 
@@ -39,14 +39,14 @@ describe("GildedRose Render Tests", () => {
 
   it("renders number of discount items in header at start (0)", () => {
     const { getByTestId } = render(<GildedRose />);
-    const discountHeader = getByTestId("discount-header");
-    expect(discountHeader).toHaveTextContent("0");
+    const discountCount = getByTestId("discount-header");
+    expect(discountCount).toHaveTextContent("0");
   });
 
   it("renders number of on sale items in header at start (5)", () => {
     const { getByTestId } = render(<GildedRose />);
-    const onSaleHeader = getByTestId("sale-header");
-    expect(onSaleHeader).toHaveTextContent("5");
+    const onSaleCount = getByTestId("sale-header");
+    expect(onSaleCount).toHaveTextContent("5");
   });
 
   it("renders update quality button", () => {
