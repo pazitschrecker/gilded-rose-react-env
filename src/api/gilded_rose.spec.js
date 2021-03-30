@@ -16,6 +16,11 @@ describe("Conjured Item Tests -- Gilded Rose", function () {
     const items = gildedRose.updateQuality();
     expect(items[0].quality).toEqual(4);
   });
+  it("should not let Conjured item quality fall below 0", () => {
+    const gildedRose = new Shop([new Item("Conjured Item", 9, 0)]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(0);
+  });
 });
 
 describe("Discount Item Tests -- Gilded Rose", function () {
@@ -118,6 +123,13 @@ describe("Backstage Passes Item Tests -- Gilded Rose", function () {
     const items = gildedRose.updateQuality();
     expect(items[0].quality).toEqual(0);
   });
+  it("should not let quality of Backstage pass item go below 0", function () {
+    const gildedRose = new Shop([
+      new Item("Backstage passes to a TAFKAL80ETC concert", 0, 0),
+    ]);
+    const items = gildedRose.updateQuality();
+    expect(items[0].quality).toEqual(0);
+  });
 });
 
 describe("Aged Brie Item Tests -- Gilded Rose", function () {
@@ -135,5 +147,18 @@ describe("Aged Brie Item Tests -- Gilded Rose", function () {
     const gildedRose = new Shop([new Item("Aged Brie", 6, 50)]);
     const items = gildedRose.updateQuality();
     expect(items[0].quality).toEqual(50);
+  });
+
+  describe("Boring Item Tests -- Gilded Rose", () => {
+    it("should not drop quality below 0", function () {
+      const gildedRose = new Shop([new Item("Boring Item", 6, 0)]);
+      const items = gildedRose.updateQuality();
+      expect(items[0].quality).toEqual(0);
+    });
+    it("should decrease quality by 1 each day while On Sale", function () {
+      const gildedRose = new Shop([new Item("Boring Item", 6, 8)]);
+      const items = gildedRose.updateQuality();
+      expect(items[0].quality).toEqual(7);
+    });
   });
 });
